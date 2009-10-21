@@ -1,0 +1,5 @@
+h2. Features
+
+* Mouse-wheel zooming
+* Strips away most buttons
+* Location and addon memory usage in clock tooltip
