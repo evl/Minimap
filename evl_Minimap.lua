@@ -1,6 +1,6 @@
 local frame = CreateFrame("Frame", nil, Minimap)
 
-local ColorizePVPType = function(pvpType)
+local colorizePVPType = function(pvpType)
 	if pvpType == "sanctuary" then
 		return {r = 0.41, g = 0.8, b = 0.94}
 	elseif pvpType == "friendly" then
@@ -14,7 +14,7 @@ local ColorizePVPType = function(pvpType)
 	end	
 end
 
-local ColorizeLatency = function(number)
+local colorizeLatency = function(number)
 	if number <= 100 then
 		return {r = 0, g = 1, b = 0}
 	elseif number <= 200 then
@@ -29,7 +29,7 @@ local onEnter = function(self)
 	
 	local zoneName = GetZoneText()
 	local subzoneName = GetSubZoneText()
-	local zoneColor = ColorizePVPType(GetZonePVPInfo())
+	local zoneColor = colorizePVPType(GetZonePVPInfo())
 
 	if subzoneName == zoneName then
 		subzoneName = ""
@@ -49,7 +49,7 @@ local onEnter = function(self)
 	GameTooltip:AddLine("\n")
 	
 	local latency = select(3, GetNetStats())
-	local latencyColor = ColorizeLatency(latency)
+	local latencyColor = colorizeLatency(latency)
 	
 	GameTooltip:AddLine(string.format("Latency: %d ms", latency), latencyColor.r, latencyColor.g, latencyColor.b)
 	GameTooltip:AddLine(string.format("Framerate: %.1f", GetFramerate()), 1, 1, 1)
