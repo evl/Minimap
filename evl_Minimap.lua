@@ -1,4 +1,4 @@
-evl_Minimap = CreateFrame("Frame", nil, Minimap)
+local frame = CreateFrame("Frame", nil, Minimap)
 
 local ColorizePVPType = function(pvpType)
 	if pvpType == "sanctuary" then
@@ -24,14 +24,12 @@ local ColorizeLatency = function(number)
 	end
 end
 
-local zoneName, zoneColor, subzoneName
-local latency, latencyColor
 local onEnter = function(self)	
 	GameTooltip:SetOwner(TimeManagerClockButton, "ANCHOR_BOTTOMRIGHT")
 	
-	zoneName = GetZoneText()
-	subzoneName = GetSubZoneText()
-	zoneColor = ColorizePVPType(GetZonePVPInfo())
+	local zoneName = GetZoneText()
+	local subzoneName = GetSubZoneText()
+	local zoneColor = ColorizePVPType(GetZonePVPInfo())
 
 	if subzoneName == zoneName then
 		subzoneName = ""
@@ -39,10 +37,19 @@ local onEnter = function(self)
 	
 	GameTooltip:AddLine(zoneName, zoneColor.r, zoneColor.g, zoneColor.b)
 	GameTooltip:AddLine(subzoneName, 1, 1, 1)
+	
+	SetMapToCurrentZone()
+
+	local x, y = GetPlayerMapPosition("player")
+	
+	if x + y > 0 then
+		GameTooltip:AddLine(format("%.1f, %.1f", x * 100, y * 100), 0.7, 0.7, 0.7)
+	end
+	
 	GameTooltip:AddLine("\n")
 	
-	latency = select(3, GetNetStats())
-	latencyColor = ColorizeLatency(latency)
+	local latency = select(3, GetNetStats())
+	local latencyColor = ColorizeLatency(latency)
 	
 	GameTooltip:AddLine(string.format("Latency: %d ms", latency), latencyColor.r, latencyColor.g, latencyColor.b)
 	GameTooltip:AddLine(string.format("Framerate: %.1f", GetFramerate()), 1, 1, 1)
@@ -60,11 +67,11 @@ local onMouseWheel = function(self, direction)
 end
 
 local onEvent = function(self, event)
-	self:EnableMouse(false)
-	self:SetPoint("TOPLEFT", Minimap, "TOPLEFT")
-	self:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT")
-	self:EnableMouseWheel(true)
-	self:SetScript("OnMouseWheel", onMouseWheel)
+	frame:EnableMouse(false)
+	frame:SetPoint("TOPLEFT", Minimap, "TOPLEFT")
+	frame:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT")
+	frame:EnableMouseWheel(true)
+	frame:SetScript("OnMouseWheel", onMouseWheel)
 	
 	MinimapZoomIn:Hide()
 	MinimapZoomOut:Hide()
@@ -78,5 +85,6 @@ local onEvent = function(self, event)
 	TimeManagerClockButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
 end
 
-evl_Minimap:SetScript("OnEvent", onEvent)
-evl_Minimap:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame:SetScript("OnEvent", onEvent)
+
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
